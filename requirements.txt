@@ -1,4 +1,4 @@
-pandas==1.5.3
-plotly==5.13.0
-streamlit==1.19.0
-topologicpy==0.2.0
+pandas
+plotly
+streamlit
+topologicpy
