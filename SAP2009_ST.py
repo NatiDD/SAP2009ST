@@ -27,12 +27,17 @@ import math
 #import matplotlib as mpl
 
 #defining wide layout for Streamlit
-st.set_page_config(layout="wide")
+
+st.set_page_config(
+    page_title="Energy performance Evaluation for dwellings, based on SST2009",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={'About': "Natalia Diaz is the author of this app. For more information send an email to diazdiazna@cardiff.ac.uk"})
 
 #Defining elements to organise dashboard layout
-header = st.container()
-energy_performance = st.container()
-geometric_features = st.container()
+#header = st.container()
+#energy_performance = st.container()
+#geometric_features = st.container()
 colA, colB, colC, colD = st.columns(4)
 col1, col2 = st.columns([3,1])
 
@@ -43,7 +48,6 @@ obs_image2 = Image.open('Obs_Image_Sides.jpg')
 #Image SAP rating
 epc_image = Image.open('EPC_Chart.jpg')
 surf_ratio = Image.open("Surface_Ratio.jpg")
-
 
 #if statement for defining the 
 #correspondednt letter according to SAP result
@@ -72,7 +76,6 @@ surface_ratio_array = ["Compact = 1:1","Rectangular = 1:1.6","Narrow = 1:2.7", "
 
 #Orientation input (tab 2)
 orientation_array = ["North","North West","West","South West","South","South East","East","Nort East"]
-
 
 #location input (tab3)
 location_array = ["1. Thames",
@@ -301,74 +304,66 @@ def width_box(floor_area_slider,surface_ratio_slider):
 width_box = width_box(floor_area_slider,surface_ratio_slider)
 length_box = floor_area_slider/width_box
 
-#Defining baseline SAP
+#Standar Baseline -  SAP calculation
 instring_baseline="TM_1_MW_7_MF_4_MR_6_MO_4_GR_3_SD_0_TH_0_HS_3_IR_1_VT_0_ST_0_PV_0_TP_0_LA_2_OR_4_RT_4_SR_0_OF_0_OB_0_OL_0_OR_0_EL_5_EA_0_EC_0_OV_0_OD_0_HA_0_SH_0_RS_3"
-
 baseline_initial = sap_engine_2009.sap_result(instring_baseline,"","","","","","","","","","")
-
-#Definining SAP updating sliders
-instring_modified = "TM_"+str(TMi(thermal_mass_slider))+"_MW_"+str(MWi(wall_UValue_slider))+"_MF_"+str(MFi(floor_UValue_slider))+"_MR_"+str((MRi(roof_UValue_slider)))+"_MO_"+str(MOi(window_UValue_slider))+"_GR_"+str(GRi(glazing_ratio_slider))+"_SD_"+str(SDi(shading_dev_slider))+"_TH_"+str(THi(thermal_bridging_slider))+"_HS_"+str(HSi(heating_system_slider))+"_IR_"+str(IRi(infiltration_rate_slider))+"_VT_"+str(VTi(ventilation_slider))+"_ST_"+str(STi(solar_thermal_slider))+"_PV_"+str(PVi(PV_panel_slider))+"_TP_0_LA_"+str(LAi(floor_area_slider))+"_OR_"+str(ORi(orientation_slider))+"_RT_"+str(RTi(location_selectbox))+"_SR_"+str(SRi(surface_ratio_slider))+"_OF_"+str(OFront(obs_OF))+"_OB_"+str(OBack(obs_OB))+"_OL_"+str(OLeft(obs_OL))+"_OR_"+str(ORight(obs_OR))+"_EL_"+str(ELi(lighting_slider))+"_EA_0_EC_0_OV_0_OD_0_HA_0_SH_0_RS_"+str(RSi(region_solar_slider))
-
-SAP_modified = sap_engine_2009.sap_result((instring_modified),"","","","","","","","","","")
-
-#baseline initial number
 baseline_separated = baseline_initial.split(",")
 baseline_result = (baseline_separated[0:6])
-    
 # transforming to float (baseline_result) using loop
 for i in range(0, len(baseline_result)):
     baseline_result[i] = float(baseline_result[i])
 
-#SAP modified number
+#Modified Project by updating sliders - SAP calculation
+instring_modified = "TM_"+str(TMi(thermal_mass_slider))+"_MW_"+str(MWi(wall_UValue_slider))+"_MF_"+str(MFi(floor_UValue_slider))+"_MR_"+str((MRi(roof_UValue_slider)))+"_MO_"+str(MOi(window_UValue_slider))+"_GR_"+str(GRi(glazing_ratio_slider))+"_SD_"+str(SDi(shading_dev_slider))+"_TH_"+str(THi(thermal_bridging_slider))+"_HS_"+str(HSi(heating_system_slider))+"_IR_"+str(IRi(infiltration_rate_slider))+"_VT_"+str(VTi(ventilation_slider))+"_ST_"+str(STi(solar_thermal_slider))+"_PV_"+str(PVi(PV_panel_slider))+"_TP_0_LA_"+str(LAi(floor_area_slider))+"_OR_"+str(ORi(orientation_slider))+"_RT_"+str(RTi(location_selectbox))+"_SR_"+str(SRi(surface_ratio_slider))+"_OF_"+str(OFront(obs_OF))+"_OB_"+str(OBack(obs_OB))+"_OL_"+str(OLeft(obs_OL))+"_OR_"+str(ORight(obs_OR))+"_EL_"+str(ELi(lighting_slider))+"_EA_0_EC_0_OV_0_OD_0_HA_0_SH_0_RS_"+str(RSi(region_solar_slider))
+SAP_modified = sap_engine_2009.sap_result((instring_modified),"","","","","","","","","","")
 SAP_modified_separated = SAP_modified.split(",")
 SAP_modified_result = (SAP_modified_separated[0:6])
-
 #transforming SAP modified to float (result) using loop
 for i in range(0, len(SAP_modified_result)):
     SAP_modified_result[i] = float(SAP_modified_result[i])
 
-with energy_performance:
-    st.title('SAP 2009 SENSITIVITY TOOL')
-    st.text("This platform is based on the SST2009")
+col1.title(':blue[SAP 2009 SENSITIVITY TOOL]')
+col1.text("This platform is based on SST2009")
 
-#visualise box
+#3D concept model
 box = Cell.Prism(width=width_box, length=length_box, height=3)
 data_box = Plotly.DataByTopology(box)
 fig_box = Plotly.FigureByData(data_box)
 col1.plotly_chart(fig_box, use_container_width=True)
-col1.subheader("Project summary according to information provided in the input section:")
+col1.text("Project summary according to information provided in the input section:")
 col1.text("Width: "+str(round(width_box,2))+"m")
 col1.text("length: "+str(round(length_box,2))+"m")
 col1.text("Surface: "+str(round(width_box*length_box))+"m2")
-col1.text(True if instring_baseline == instring_modified else False)
-col1.text("baseline:"+ instring_baseline)
-col1.text("modified:"+ instring_modified)
-    
-epc_diag = col2.image(epc_image)
+
+#Use this button for define project baseline to compare with the modified project. First set baseline as the standard and the second apply modification as baseline to compare with further updated project.
 standard_baseline = col2.button("Standard Baseline")
 modified_baseline = col2.button("Modify Baseline")
-update_SAP = col2.button("Calculate Updated SAP")
 
-#def baseline():
-  #  if modified_baseline:
-   #     st.write(str(SAP_modified_result[2]))
-   # elif standard_baseline:
-   #     st.write(str(baseline_result[2]))
-#else:
-    #st.write("Baseline: " +str(baseline_result[2])
+def baseline_used():
+    if modified_baseline == True:
+        st.write("Modified Baseline activated")
+    elif standard_baseline == True:
+        st.write("Standard Baseline Activated")
+    else:
+        st.write("Standard Baseline Activated")
 
-    
+baseline_text = col2.text(baseline_used())
+
+#Reporting Energy number and letter for the baseline defined(standard or modified)
 col2.metric("SAP Baseline", str((SAP_modified_result[2]) if modified_baseline == True else (baseline_result[2])))   
-#col2.metric("Baseline", str(baseline_result[2]))
-col2.metric("Rating Baseline", SAP_letter(float(baseline_result[2]))) 
+col2.metric("Rating Baseline", SAP_letter(float(baseline_result[2])))
+
+#Use this button for apply project modifications and show energy performance rating
+update_SAP = col2.button("Calculate Updated SAP")   
+
+#Reporting Energy number and letter for the updated project
 col2.metric("SAP Ppdated project",(((SAP_modified_result[2]) if modified_baseline == True else (baseline_result[2])))if update_SAP == False else (SAP_modified_result[2]))  
 col2.metric("Rating Updated Project", SAP_letter(float(baseline_result[2])) if update_SAP == False else SAP_letter(float(SAP_modified_result[2])))
-
+epc_diag = col2.image(epc_image)
 
 
     #test for creating epc diag from horizontal bar chart
     #bar_chart = alt.Chart(SAP_data).mark.bar().encode(y='values', x='SAP Letter'), st.altair_chart(bar_chart)
-
 
     #with colA:
         #Table_result = colA.metric("Baseline", str(baseline_result[2]))
@@ -379,3 +374,16 @@ col2.metric("Rating Updated Project", SAP_letter(float(baseline_result[2])) if u
     #with colD:
         #Letter_result = colD.metric("Updated Rating", SAP_letter(float(SAP_modified_result[2])))
 
+
+#def baseline():
+  #  if modified_baseline:
+   #     st.write(str(SAP_modified_result[2]))
+   # elif standard_baseline:
+   #     st.write(str(baseline_result[2]))
+#else:
+    #st.write("Baseline: " +str(baseline_result[2])
+
+    #Temporary code for comparing Baseline and modified SAP analysis
+#col1.text(True if instring_baseline == instring_modified else False)
+#col1.text("baseline:"+ instring_baseline)
+#col1.text("modified:"+ instring_modified)
