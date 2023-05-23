@@ -2,9 +2,8 @@
 # coding: utf-8
 # In[5]:
 # TO RUN THIS:
-# 1- GO TO TERMINAL
-# 2- 
-# 3- streamlit run SAP2009_ST.py
+# 1- GO TO COMMAND LINE FOR RUN THE APP
+# 2- streamlit run SAP2009_ST.py
 
 #Importing streamlit and others 
 import streamlit as st
@@ -48,6 +47,10 @@ obs_image2 = Image.open('Obs_Image_Sides.jpg')
 #Image SAP rating
 epc_image = Image.open('EPC_Chart.jpg')
 surf_ratio = Image.open("Surface_Ratio.jpg")
+
+#Image Location
+loc_UK_map = Image.open("Location_maps.jpg")
+
 
 #if statement for defining the 
 #correspondednt letter according to SAP result
@@ -103,12 +106,18 @@ region_solar_array = ["800-850"," 850-900", "900-950", "950-1000", "1000-1050", 
 
 #Fabric input(tab 4): 
 thermal_mass_array = ["Low","Medium","High"]
-wall_UValue_array =[2.1,2.0,1.7,1.0,0.6,0.45,0.35,0.3,0.25,0.2,0.15,0.10]
-floor_UValue_array =[2.0,0.6,0.45,0.3,0.25,0.2,0.15,0.14,0.13,0.12,0.11,0.10]
-roof_UValue_array =[2.0,1.5,1.,0.6,0.35,0.25,0.2,0.13,0.1]
-window_UValue_array =[4.8,3.1,3,2.2,2,1.8,1.6,1.4,1.2,1,0.8]
-glazing_ratio_array =["10%","15%","20%","25%","30%","35%","40%","45%","50%"]
-shading_dev_array = [0.24, 0.27, 0.60, 0.65, 0.70, 0.80, 0.85, 0.88, 0.90, "NONE"]
+wall_UValue_array =[2.1,2.0,1.7,1.0,0.6,0.45,
+                    0.35,0.3,0.25,0.2,0.15,0.10]
+floor_UValue_array =[2.0,0.6,0.45,0.3,0.25,0.2,
+                     0.15,0.14,0.13,0.12,0.11,0.10]
+roof_UValue_array =[2.0,1.5,1.,0.6,0.35,
+                    0.25,0.2,0.13,0.1]
+window_UValue_array =[4.8,3.1,3,2.2,2,1.8,
+                      1.6,1.4,1.2,1,0.8]
+glazing_ratio_array =["10%","15%","20%","25%",
+                      "30%","35%","40%","45%","50%"]
+shading_dev_array = [0.24, 0.27, 0.60, 0.65, 0.70, 
+                     0.80, 0.85, 0.88, 0.90, "NONE"]
 thermal_bridge_array =["0.15 or NO INFO",0.08,0.04]
 
 #System input(tab 5):
@@ -123,32 +132,30 @@ lighting_array=[0,10,20,30,40,50,60,70,80,90,100]
 
 #Defining tabs with input to be included in the sidebar
 with st.sidebar:
-    tab1,tab2,tab3, tab4, tab5 = st.tabs(["1.Geometric Input","2.Orientation Input", "3.Location Input","4.Fabric input","5.Systems Input"])
-    tab1.title('Project input')
-    tab2.title('Project input')
-    tab3.title('Project input')
-    tab4.title('Project input')
-    tab5.title('Project input')
+    tab1,tab2,tab3, tab4, tab5 = st.tabs(["1.Geometric","2.Orientation", "3.Location","4.Fabric","5.Systems"])
+    tab1.subheader('Project input: Geometric Information')
+    tab2.subheader('Project input: Orientation')
+    tab3.subheader('Project input: Location Information')
+    tab4.subheader('Project input: Fabric specification')
+    tab5.subheader('Project input: Systems specification ')
 
     #TAB1: Defining building geometric input(Floor area, surface ratio, and orientation).
-    tab1.subheader("Geometric Information")
     floor_area_slider = tab1.select_slider("Floor Area(m2)",options = floor_area_array, value=floor_area_array[2])
     tab1.markdown("Total floor area should be mesured as the sum of the actual floor area of each floor. Unheated spaces clearly divided from the dwelling should not be included(SAP 2009 version 9.90 - March 2010. Note: Living area is calculated in relation to total floor area.")
     surface_ratio_slider = tab1.select_slider("Surface Ratio", options = surface_ratio_array)
     surf_ratio_image = tab1.image(surf_ratio) 
-    surf_ratio_text = tab1.caption("Image Plan/Footprint Ratio (Centre For Research in the Built Environment, 2013)")
+    surf_ratio_text = tab1.caption("Image Plan/Footprint Ratio (Crobu et al. 2013)")
     tab1.markdown("Surface ratio relates to the plan form of the building, either compact (square), rectangular or narrow. This should be apparent from a visual check of the exterior of teh building or from plans.")
     
     #TAB2: Defining Orientation and obstables input
     #Obstacles: Expllaining the logic of obastables and checkbox for indicate facades with the three condicions
-    tab2.subheader("Orientation Information")
     orientation_slider = tab2.select_slider("Orientation: Select the orientation of the most glazed facade of your building:", options = orientation_array, value=orientation_array[4])
     obs_text1 = tab2.subheader("Shelter Sides and Obstacles (Overshading):")
     obs_text2 = tab2.text("A side should be considered if all the following apply:")
     obs_diag1 = tab2.image(obs_image1)
-    obs_diag1_text = tab2.caption("Image shelter sides and obstacles(Centre For Research in the Built Environment, 2013)")
+    obs_diag1_text = tab2.caption("Image shelter sides and obstacles(Crobu et al. 2013)")
     obs_diag2 = tab2.image(obs_image2)
-    obs_diag2_text = tab2.caption("Image: Facades designation (based on: Centre For Research in the Built Environment, 2013)")
+    obs_diag2_text = tab2.caption("Image: Facades designation (based on Crobu et al. 2013)")
     obs_text3 = tab2.markdown("Click on the options below to identify the facades of your building where all the three conditions apply:")
     obs_OF = tab2.checkbox("Main glazed facade")
     obs_OL = tab2.checkbox("Side 1")
@@ -156,24 +163,39 @@ with st.sidebar:
     obs_OB = tab2.checkbox("Side 3")
     
     #TAB3: Defining location input
-    tab3.subheader("Location Information")
     tab3.markdown("Location is used for calculating cooling requirements and to estimate solar thermal output and the electricity produced by PV panel (if installed). Select the solar irradiation band in your region. Annual solar irradiation will be usde in the calculation of PV panel outputs.") 
     location_selectbox= tab3.selectbox("Location",options = location_array, index=4)
+
     region_solar_slider = tab3.select_slider("Region Solar", options = region_solar_array, value= region_solar_array[3])
-    
-    #TAB4: Defining building fabric input: according to information required in sap_engine_2009.py.
-    tab4.subheader("Fabric Information")
-    thermal_mass_slider = tab4.select_slider("Thermal mass", options=(thermal_mass_array), value=thermal_mass_array[1])
-    wall_UValue_slider = tab4.select_slider("Walls U-value",options=(wall_UValue_array), value=wall_UValue_array[7])
-    floor_UValue_slider = tab4.select_slider("Floor U-value", options=(floor_UValue_array), value=floor_UValue_array[4])
-    roof_UValue_slider = tab4.select_slider("Roof U-value",options=(roof_UValue_array),value=roof_UValue_array[6])
-    window_UValue_slider = tab4.select_slider("Windows U-value",options=(window_UValue_array), value=window_UValue_array[4])
-    glazing_ratio_slider = tab4.select_slider("Glazing Ratio",options=(glazing_ratio_array), value=glazing_ratio_array[3])
-    shading_dev_slider = tab4.select_slider("Shading Dev.",options=(shading_dev_array))
-    thermal_bridging_slider = tab4.select_slider("Thermal Bridging",options=(thermal_bridge_array))
+    map = tab3.image(loc_UK_map, caption="Map of UK's climatic regions used in SAP2009 and averaga sum of horizontal solar radiation in KWh/m2/y (Based on Crobu et al. 2013)")
+  
+
+    #TAB4: Defining building fabric input: according 
+    # to information required in sap_engine_2009.py.
+    thermal_mass_slider = tab4.select_slider("Thermal mass", 
+                                             options=(thermal_mass_array), 
+                                             value=thermal_mass_array[1])
+    wall_UValue_slider = tab4.select_slider("Walls U-value",
+                                            options=(wall_UValue_array), 
+                                            value=wall_UValue_array[7])
+    floor_UValue_slider = tab4.select_slider("Floor U-value", 
+                                             options=(floor_UValue_array), 
+                                             value=floor_UValue_array[4])
+    roof_UValue_slider = tab4.select_slider("Roof U-value",
+                                            options=(roof_UValue_array),
+                                            value=roof_UValue_array[6])
+    window_UValue_slider = tab4.select_slider("Windows U-value",
+                                              options=(window_UValue_array), 
+                                              value=window_UValue_array[4])
+    glazing_ratio_slider = tab4.select_slider("Glazing Ratio",
+                                              options=(glazing_ratio_array), 
+                                              value=glazing_ratio_array[3])
+    shading_dev_slider = tab4.select_slider("Shading Dev.",
+                                            options=(shading_dev_array))
+    thermal_bridging_slider = tab4.select_slider("Thermal Bridging",
+                                                 options=(thermal_bridge_array))
         
     #TAB5: Defining graphic selection section for systems
-    tab5.subheader("Systems Information")
     heating_system_slider = tab5.select_slider("Heating System",options=(heating_system_array), value=heating_system_array[3])
     infiltration_rate_slider = tab5.select_slider("Infiltration Rate",options=(q50_array), value=q50_array[1])
     ventilation_slider = tab5.select_slider("Ventilation",options=(ventilation_array))
@@ -232,49 +254,57 @@ def VTi(k):
 def STi(l):
     return(solar_thermal_array.index(l))
 
-#PV panel array
+#PV panel index
 def PVi(m):
     return(PV_panel_array.index(m))
 
 # Type of house is detached fot his project      
 TPi = 0
- 
+
+#floor/living area index 
 def LAi(o):
     return(floor_area_array.index(o))
 
+#orientation index
 def ORi(p):
     return(orientation_array.index(p))
 
+#region index
 def RTi(q):
     return(location_array.index(q))
 
+# Surface ratio index
 def SRi(r):
     return(surface_ratio_array.index(r))
 
+# Obstacle front boolean
 def OFront(s):
     if s:
         return 1
     else:
         return 0
 
+# Obstacle back boolean
 def OBack(t):
     if t:
         return 1
     else:
         return 0
 
+# Obstacle left boolean
 def OLeft(u):
     if u:
         return 1
     else:
         return 0
 
+# Obstacle right boolean
 def ORight(v):
     if v:
         return 1
     else:
         return 0
-#Efficient lighthing    
+#Efficient lighthing index 
 def ELi(w): 
     return(lighting_array.index(w))
 
@@ -285,6 +315,7 @@ def ELi(w):
 #def HAi(ab): not included
 #def SHi(ac):
 
+#Region Solar index
 def RSi(ad):
     return(region_solar_array.index(ad))
 
@@ -323,43 +354,51 @@ for i in range(0, len(SAP_modified_result)):
     SAP_modified_result[i] = float(SAP_modified_result[i])
 
 col1.title(':blue[SAP 2009 SENSITIVITY TOOL]')
-col1.text("This platform is based on SST2009")
+col1.subheader(':grey[for domestic buildings]')
+col1.caption("Application based on 'Simple Simulation Sensitivity Tool' (Crobu et al. 2013)")
+
 
 #3D concept model
-box = Cell.Prism(width=width_box, length=length_box, height=3)
-data_box = Plotly.DataByTopology(box)
+#box = Cell.Prism(width=width_box, length=length_box, height=3)
+#data_box = Plotly.DataByTopology(box)
 fig_box = Plotly.FigureByData(data_box)
-col1.plotly_chart(fig_box, use_container_width=True)
-col1.text("Project summary according to information provided in the input section:")
-col1.text("Width: "+str(round(width_box,2))+"m")
-col1.text("length: "+str(round(length_box,2))+"m")
-col1.text("Surface: "+str(round(width_box*length_box))+"m2")
+#col1.plotly_chart(fig_box, use_container_width=True)
+#col1.subheader(":blue[Project dimensions]")
+#col1.markdown(":blue[Width:] "+str(round(width_box,2))+" m, "+ ":blue[Length:] "+str(round(length_box,2))+" m, " +":blue[Surface:] "+str(round(width_box*length_box))+" m2")
+#col1.markdown(":blue[Length:] "+str(round(length_box,2))+" m")
+#col1.markdown(":blue[Surface:] "+str(round(width_box*length_box))+" m2")
+
+col2.subheader("Analysis Result")
 
 #Use this button for define project baseline to compare with the modified project. First set baseline as the standard and the second apply modification as baseline to compare with further updated project.
 standard_baseline = col2.button("Standard Baseline")
-modified_baseline = col2.button("Modify Baseline")
-
+modified_baseline = col2.button("Update Baseline")
+#Define bsaeline used in the SAP baseline analysis
 def baseline_used():
     if modified_baseline == True:
-        st.write("Modified Baseline activated")
+        col2.markdown(":blue[Baseline:] Modified")
     elif standard_baseline == True:
-        st.write("Standard Baseline Activated")
+        col2.markdown(":blue[Baseline:] Standard")
     else:
-        st.write("Standard Baseline Activated")
+        col2.markdown(":blue[Baseline:] Standard")
+baseline_used()
 
-baseline_text = col2.text(baseline_used())
-
-#Reporting Energy number and letter for the baseline defined(standard or modified)
-col2.metric("SAP Baseline", str((SAP_modified_result[2]) if modified_baseline == True else (baseline_result[2])))   
-col2.metric("Rating Baseline", SAP_letter(float(baseline_result[2])))
+#Reporting Energy number and letter for the baseline 
+# defined (standard or modified)
+col2.metric("SAP Baseline", 
+            str((SAP_modified_result[2])
+                if modified_baseline == True 
+                else (baseline_result[2])))   
+col2.metric("Rating Baseline", 
+            SAP_letter(float(baseline_result[2])))
 
 #Use this button for apply project modifications and show energy performance rating
-update_SAP = col2.button("Calculate Updated SAP")   
+update_SAP = col2.button("Calculate Updated Project")   
 
 #Reporting Energy number and letter for the updated project
-col2.metric("SAP Ppdated project",(((SAP_modified_result[2]) if modified_baseline == True else (baseline_result[2])))if update_SAP == False else (SAP_modified_result[2]))  
-col2.metric("Rating Updated Project", SAP_letter(float(baseline_result[2])) if update_SAP == False else SAP_letter(float(SAP_modified_result[2])))
-epc_diag = col2.image(epc_image)
+col2.metric("SAP - Updated project",(((SAP_modified_result[2]) if modified_baseline == True else (baseline_result[2])))if update_SAP == False else (SAP_modified_result[2]))  
+col2.metric("Rating - Updated Project", SAP_letter(float(baseline_result[2])) if update_SAP == False else SAP_letter(float(SAP_modified_result[2])))
+epc_diag = col2.image(epc_image, caption=" Energy PErformance Certificate Chart (Crobu et al. 2013)")
 
 
     #test for creating epc diag from horizontal bar chart
