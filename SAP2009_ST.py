@@ -359,12 +359,12 @@ col1.caption("Application based on 'Simple Simulation Sensitivity Tool' (Crobu e
 
 
 #3D concept model
-#box = Cell.Prism(width=width_box, length=length_box, height=3)
-#data_box = Plotly.DataByTopology(box)
+box = Cell.Prism(width=width_box, length=length_box, height=3)
+data_box = Plotly.DataByTopology(box)
 fig_box = Plotly.FigureByData(data_box)
-#col1.plotly_chart(fig_box, use_container_width=True)
-#col1.subheader(":blue[Project dimensions]")
-#col1.markdown(":blue[Width:] "+str(round(width_box,2))+" m, "+ ":blue[Length:] "+str(round(length_box,2))+" m, " +":blue[Surface:] "+str(round(width_box*length_box))+" m2")
+col1.plotly_chart(fig_box, use_container_width=True)
+col1.subheader(":blue[Project dimensions]")
+col1.markdown(":blue[Width:] "+str(round(width_box,2))+" m, "+ ":blue[Length:] "+str(round(length_box,2))+" m, " +":blue[Surface:] "+str(round(width_box*length_box))+" m2")
 #col1.markdown(":blue[Length:] "+str(round(length_box,2))+" m")
 #col1.markdown(":blue[Surface:] "+str(round(width_box*length_box))+" m2")
 
